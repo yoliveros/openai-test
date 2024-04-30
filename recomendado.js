@@ -1,7 +1,12 @@
 import OpenAI from 'openai';
+const openai = new OpenAI({
+  apiKey: "aqui-va-la-api-key",
+  dangerouslyAllowBrowser: true,
+});
 
-export async function getRecommendations() {
-
+export async function getRecommendations(e ) {
+    e.preventDefault()
+    
     const movies = [];
     for (let i = 1; i <= 5; i++) {
         const movie = document.getElementById(`movie${i}`).value.trim();
@@ -16,8 +21,9 @@ export async function getRecommendations() {
     }
 
     try {
+        console.log('enter in try')
         const response = await openai.chat.completions.create({
-            model: 'davinci-002',
+            model: 'gpt-3.5-turbo',
             messages: [
                 {
                     role: 'user',
@@ -26,8 +32,10 @@ export async function getRecommendations() {
             ]
         })
 
+        console.log(response)
 
-        const recommendations = response.data.choices[0].text.trim().split('\n');
+
+        const recommendations = response.choices[0].message.content.trim().split('\n');
         displayRecommendations(recommendations);
     } catch (error) {
         console.error('Error al obtener recomendaciones:', error);
